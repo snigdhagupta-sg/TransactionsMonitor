@@ -19,6 +19,6 @@ app.use(cookieParser());
 ConnectMongo();
 
 // Routes
-app.use("/api/auth", userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/transactions", transactionRoutes);

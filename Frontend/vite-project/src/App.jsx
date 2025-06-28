@@ -112,12 +112,12 @@ const App = () => {
     }
   };
 
-  const handleSignup = async (username, password, confirmPassword) => {
+  const handleSignup = async (name, email, phonenumber, username, password, confirmPassword) => {
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, confirmPassword })
+        body: JSON.stringify({ name, email, phonenumber, username, password, confirmPassword })
       });
       const data = await response.json();
       if (data.success) {
@@ -234,6 +234,7 @@ const App = () => {
               <User size={64} className="mx-auto text-gray-400 mb-4" />
               <h2 className="text-2xl font-semibold text-gray-600 mb-2">Welcome to Payment Manager</h2>
               <p className="text-gray-500 mb-6">Please login or signup to continue</p>
+
             </div>
           )}
         </div>
@@ -271,34 +272,91 @@ const App = () => {
     );
   };
 
-  const SignupPage = () => {
-    const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' });
+const SignupPage = ({ setCurrentPage, handleSignup }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phonenumber: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-    const handleSubmitSignup = () => {
-      if (formData.password !== formData.confirmPassword) return alert("Passwords don't match");
-      handleSignup(formData.username, formData.password, formData.confirmPassword);
-    };
+  const handleSubmitSignup = () => {
+    const { name, email, phonenumber, username, password, confirmPassword } = formData;
 
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-6">
-        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-          <button onClick={() => setCurrentPage('home')} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6">
-            <ArrowLeft size={20} /> Back to Home
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d{10}$/;
+
+    if (!emailRegex.test(email)) return alert("Please enter a valid email address");
+    if (!phoneRegex.test(phonenumber)) return alert("Please enter a valid 10-digit phone number");
+    if (password !== confirmPassword) return alert("Passwords don't match");
+
+    handleSignup(name, email, phonenumber, username, password, confirmPassword);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-6">
+      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+        <button onClick={() => setCurrentPage('home')} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6">
+          <ArrowLeft size={20} /> Back to Home
+        </button>
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Sign Up</h2>
+        <div className="space-y-6">
+          <input
+            type="text"
+            placeholder="Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+          />
+          <input
+            type="text"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+          />
+          <input
+            type="text"
+            placeholder="Phone Number"
+            value={formData.phonenumber}
+            onChange={(e) => setFormData({ ...formData, phonenumber: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+          />
+          <input
+            type="text"
+            placeholder="Username"
+            value={formData.username}
+            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+          />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+          />
+          <button
+            onClick={handleSubmitSignup}
+            className="w-full bg-green-500 text-white py-3 rounded-lg"
+          >
+            Sign Up
           </button>
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Sign Up</h2>
-          <div className="space-y-6">
-            <input type="text" placeholder="Username" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg" />
-            <input type="password" placeholder="Password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg" />
-            <input type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg" />
-            <button onClick={handleSubmitSignup} className="w-full bg-green-500 text-white py-3 rounded-lg">Sign Up</button>
-          </div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
+
 
   const AddCashPage = () => {
     const [formData, setFormData] = useState({
