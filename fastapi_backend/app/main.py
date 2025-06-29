@@ -41,7 +41,7 @@ class Transaction(BaseModel):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -131,21 +131,13 @@ from typing import List
 from typing import List
 
 @app.post("/upload_transactions/")
-async def upload_transactions(data: List[Transaction]):
+async def upload_transactions(request: Request, data: List[Transaction]):
     JWT_SECRET = os.getenv("JWT_SECRET")
 
-    token = request.cookies.get("token")
+    user_id = request.cookies.get("user_id")
 
-    if not token:
-        raise HTTPException(status_code=401, detail="Token missing")
-
-    try:
-        decoded = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        user_id = decoded.get("user_id")
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User not logged in")
 
     inserted = []
     i = 0

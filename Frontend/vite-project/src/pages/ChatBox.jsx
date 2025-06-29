@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ChatBox.css';
-
-// Icon components (you can replace these with your preferred icon library)
+import {ArrowLeft} from 'lucide-react';
 const Send = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -65,7 +64,8 @@ const Receipt = () => (
     </svg>
 );
 
-const ChatBox = () => {
+const ChatBox = ({ setCurrentPage }) => {
+    // console.log('setCurrentPage in ChatBox:', setCurrentPage);
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([
         { 
@@ -182,6 +182,7 @@ const ChatBox = () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(parsedTransactions),
+                credentials: 'include'
             });
             
             const data3 = await res3.json();
@@ -224,8 +225,13 @@ const ChatBox = () => {
 
     return (
         <div className="chat-container">
-            {/* Header */}
             <div className="chat-header">
+            <button 
+              onClick={() => setCurrentPage('home')} 
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              <ArrowLeft size={20} /> Back to Dashboard
+            </button>
                 <div className="header-content">
                     <div className="header-icon">
                         <TrendingUp />

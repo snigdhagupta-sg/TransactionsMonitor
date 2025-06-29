@@ -4,7 +4,6 @@ const transactionSchema = new mongoose.Schema({
   user_id: {
     type: String,
     required: true,
-    unique: true
   },
   account_number: {
     type: String,

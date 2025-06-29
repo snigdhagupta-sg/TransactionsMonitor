@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
-const Account = require("../models/AccountNumber");
+const Account = require("../models/accountnumbers");
 
 // SIGNUP
 exports.signup = async (req, res) => {

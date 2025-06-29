@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
-const Transaction = require("../models/Transaction");
+const Transaction = require("../models/transactions");
 
 exports.getTransactions = async (req, res) => {
   try {
